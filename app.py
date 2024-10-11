@@ -4,7 +4,6 @@ matplotlib.use('Agg')
 from src.visualization_functions import visualize_test_results_con
 
 app = Flask(__name__)
-
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
