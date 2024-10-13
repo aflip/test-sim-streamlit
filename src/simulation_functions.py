@@ -86,9 +86,9 @@ def perform_test(
         # Simulate test outcomes based on sensitivity and specificity
         test_results = np.where(
             true_conditions,
-            np.random.random(size)
+            np.random.rand(size)
             < t_sensitivity,  # True positives and false negatives
-            np.random.random(size)
+            np.random.rand(size)
             >= t_specificity,  # False positives and true negatives
         )
     else:

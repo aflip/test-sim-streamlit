@@ -5,8 +5,6 @@ from src.simulation_functions import (
     perform_test,
     calculate_test_metrics
 )
-import io
-import base64
 
 def make_waffle(results_dict: dict):
     fig1 = plt.figure(

@@ -1,16 +1,31 @@
 import streamlit as st
-import matplotlib.pyplot as plt
 from src.visualization_functions import visualize_test_results
 
-"hello, world" 
+
+st.set_page_config(
+    page_title="Medical Test Simulation",
+    page_icon=":pill:",
+    layout="wide",  # Use the "wide" layout
+    initial_sidebar_state="collapsed",  # Collapse the sidebar
+)
+
+
 def app():
     st.title("Medical Test Simulation")
-    col1, col2, = st.columns(2)
+
+    (
+        col1,
+        col2,
+    ) = st.columns(2)
     # Get form inputs
     with col1:
         st.header("Input")
-        population_size = st.number_input("Population Size", min_value=1, value=1000, step=1)
-        conditions = st.text_input("Conditions (comma-separated)", value="Condition A, Condition B")
+        population_size = st.number_input(
+            "Population Size", min_value=1, value=1000, step=1
+        )
+        conditions = st.text_input(
+            "Conditions (comma-separated)", value="Condition A, Condition B"
+        )
         prevalences = st.text_input("Prevalences (comma-separated)", value="0.1, 0.2")
         test_condition = st.selectbox("Test Condition", conditions.split(","))
         sensitivity = st.slider("Sensitivity", 0.0, 1.0, 0.8, 0.01)
@@ -27,11 +42,7 @@ def app():
     # Run simulation and visualization
     if st.button("Run Simulation"):
         fig1, fig2, messages = visualize_test_results(
-            population_data,
-            test_condition,
-            sensitivity,
-            specificity,
-            grid_size=20
+            population_data, test_condition, sensitivity, specificity, grid_size=20
         )
         with col2:
             st.header("Results")
@@ -41,6 +52,7 @@ def app():
                 st.write(messages)
             else:
                 st.error(messages)
-                
+
+
 if __name__ == "__main__":
     app()
