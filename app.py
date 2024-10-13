@@ -1,49 +1,46 @@
-from flask import Flask, render_template, request
-import matplotlib
-matplotlib.use('Agg')
-from src.visualization_functions import visualize_test_results_con
+import streamlit as st
+import matplotlib.pyplot as plt
+from src.visualization_functions import visualize_test_results
 
-app = Flask(__name__)
-@app.route("/", methods=["GET", "POST"])
-def index():
-    if request.method == "POST":
-        try:
-            # Get form data
-            population_size = int(request.form["population_size"])
-            conditions = request.form["conditions"].split(",")
-            prevalences = [float(p) for p in request.form["prevalences"].split(",")]
-            test_condition = request.form["test_condition"]
-            sensitivity = float(request.form["sensitivity"])
-            specificity = float(request.form["specificity"])
+"hello, world" 
+def app():
+    st.title("Medical Test Simulation")
+    col1, col2, = st.columns(2)
+    # Get form inputs
+    with col1:
+        st.header("Input")
+        population_size = st.number_input("Population Size", min_value=1, value=1000, step=1)
+        conditions = st.text_input("Conditions (comma-separated)", value="Condition A, Condition B")
+        prevalences = st.text_input("Prevalences (comma-separated)", value="0.1, 0.2")
+        test_condition = st.selectbox("Test Condition", conditions.split(","))
+        sensitivity = st.slider("Sensitivity", 0.0, 1.0, 0.8, 0.01)
+        specificity = st.slider("Specificity", 0.0, 1.0, 0.9, 0.01)
 
-            # Create population data dictionary
-            population_data = {
-                "size": population_size,
-                "conditions": {c.strip(): p for c, p in zip(conditions, prevalences)},
-            }
+        # Create population data dictionary
+        conditions = [c.strip() for c in conditions.split(",")]
+        prevalences = [float(p) for p in prevalences.split(",")]
+        population_data = {
+            "size": population_size,
+            "conditions": {c: p for c, p in zip(conditions, prevalences)},
+        }
 
-            # Run simulation and visualization
-            plot_data1, plot_data2, messages = visualize_test_results_con(
-                population_data,
-                test_condition,
-                sensitivity,
-                specificity,
-                grid_size=20
-            )
-
-            if plot_data1 and plot_data2:
-                return render_template(
-                    "result.html",
-                    plot_data1=plot_data1,
-                    plot_data2=plot_data2,
-                    messages=messages
-                )
+    # Run simulation and visualization
+    if st.button("Run Simulation"):
+        fig1, fig2, messages = visualize_test_results(
+            population_data,
+            test_condition,
+            sensitivity,
+            specificity,
+            grid_size=20
+        )
+        with col2:
+            st.header("Results")
+            if fig1 and fig2:
+                st.pyplot(fig1)
+                st.pyplot(fig2)
+                st.write(messages)
             else:
-                return render_template("error.html", error_message=messages)
-        except Exception as e:
-            return render_template("error.html", error_message=str(e))
-
-    return render_template("index.html")
-
+                st.error(messages)
+                
 if __name__ == "__main__":
-    app.run(debug=True)
+    app()

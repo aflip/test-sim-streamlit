@@ -8,7 +8,7 @@ from .simulation_functions import (
 # Import visualization functions
 from .visualization_functions import (
     make_waffle,
-    visualize_test_results_con
+    visualize_test_results
 )
 
 
@@ -17,5 +17,5 @@ __all__ = [
     'perform_test',
     'calculate_test_metrics',
     'make_waffle',
-    'visualize_test_results_con',
+    'visualize_test_results',
 ]

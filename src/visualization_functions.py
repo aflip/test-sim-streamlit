@@ -50,7 +50,7 @@ def make_waffle(results_dict: dict):
     return fig1, fig2
 
 
-def visualize_test_results_con(pop_dict, condition, sensitivity, specificity, grid_size):
+def visualize_test_results(pop_dict, condition, sensitivity, specificity, grid_size):
     """
     Visualizes the results of a diagnostic test simulation.
 
@@ -73,18 +73,7 @@ def visualize_test_results_con(pop_dict, condition, sensitivity, specificity, gr
                 messages += metrics_message
                 fig1, fig2 = make_waffle(results)
 
-                # Save the figures to a BytesIO object and encode as base64
-                buffer1 = io.BytesIO()
-                fig1.savefig(buffer1, format="png", bbox_inches='tight')
-                buffer1.seek(0)
-                plot_data1 = base64.b64encode(buffer1.getvalue()).decode()
-
-                buffer2 = io.BytesIO()
-                fig2.savefig(buffer2, format="png", bbox_inches='tight')
-                buffer2.seek(0)
-                plot_data2 = base64.b64encode(buffer2.getvalue()).decode()
-
-                return plot_data1, plot_data2, messages
+                return fig1, fig2, messages
             else:
                 messages += "Error: Good news, no one has this condition! \nBad news, we need sick people!"
                 return None, None, messages
