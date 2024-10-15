@@ -16,13 +16,16 @@ def app():
     with st.sidebar:
         st.header("Input")
         population_size = st.number_input(
-            "Population Size", min_value=1, value=1000, step=1
+            "Population Size",
+            min_value=1000,
+            max_value=1000000000,
+            value=1000,
+            step=1000,
         )
         disease_name = st.text_input("Disease Name", value="Disease A")
         prevalence = st.number_input(
             "Prevalence", min_value=0.0, max_value=1.0, value=0.1, step=0.01
         )
-        test_name = st.text_input("Test Name", value="Test A")
         sensitivity = st.slider("Sensitivity", 0.0, 1.0, 0.8, 0.01)
         specificity = st.slider("Specificity", 0.0, 1.0, 0.9, 0.01)
 
@@ -41,17 +44,23 @@ def app():
         st.header("Results")
 
     # Run simulation and visualization
-    if st.button("Run Simulation"):
+    if st.sidebar.button("Run Simulation"):
         fig1, fig2, messages = visualize_test_results(
-            population_data, disease_name, test_name, sensitivity, specificity, grid_size=20
+            population_data,
+            disease_name,
+            sensitivity,
+            specificity,
+            grid_size=20,
         )
-        with col2:
+        with col1:
             if fig1 and fig2:
                 st.pyplot(fig1)
                 st.pyplot(fig2)
                 st.write(messages)
             else:
                 st.error(messages)
+        with col2:
+            st.write(messages)
 
 
 if __name__ == "__main__":

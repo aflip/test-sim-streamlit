@@ -3,9 +3,10 @@ from pywaffle import Waffle
 from src.simulation_functions import (
     generate_testing_population,
     perform_test,
-    calculate_test_metrics
+    calculate_test_metrics,
 )
 import streamlit as st
+
 
 def make_waffle(results_dict: dict):
     fig1 = plt.figure(
@@ -19,9 +20,12 @@ def make_waffle(results_dict: dict):
         },
         icon_size=20,
         legend={"loc": "upper left", "bbox_to_anchor": (1.05, 1)},
-        colors=[  "#56ae6c", "#fe6e6c",],
+        colors=[
+            "#56ae6c",
+            "#fe6e6c",
+        ],
         title={"label": "People who got a positive test", "loc": "center"},
-        icons=['face-meh', 'face-frown'],
+        icons=["face-meh", "face-frown"],
         vertical=False,
         block_arranging_style="new-line",
         starting_location="NW",
@@ -30,7 +34,6 @@ def make_waffle(results_dict: dict):
     fig2 = plt.figure(
         FigureClass=Waffle,
         rows=5,
-
         columns=10,
         values={
             k: v
@@ -41,7 +44,7 @@ def make_waffle(results_dict: dict):
         legend={"loc": "upper left", "bbox_to_anchor": (1.05, 1)},
         colors=["#719a78", "#fe6e6c"],
         title={"label": "People who got a negative test", "loc": "center"},
-        icons=['face-smile', 'face-frown'],
+        icons=["face-smile", "face-frown"],
         vertical=False,
         block_arranging_style="new-line",
         starting_location="NW",
@@ -69,7 +72,7 @@ def visualize_test_results(pop_dict, condition, sensitivity, specificity, grid_s
             t_df, test_message = perform_test(df, condition, sensitivity, specificity)
             messages += test_message
             if t_df is not None:
-                results, metrics_message = calculate_test_metrics(t_df, condition)  
+                results, metrics_message = calculate_test_metrics(t_df, condition)
                 messages += metrics_message
                 fig1, fig2 = make_waffle(results)
                 st.write("**Test Metrics:**")
