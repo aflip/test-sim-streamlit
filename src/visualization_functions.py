@@ -5,6 +5,7 @@ from src.simulation_functions import (
     perform_test,
     calculate_test_metrics
 )
+import streamlit as st
 
 def make_waffle(results_dict: dict):
     fig1 = plt.figure(
@@ -14,14 +15,14 @@ def make_waffle(results_dict: dict):
         values={
             k: v
             for k, v in results_dict.items()
-            if k in ["false_positives", "true_negatives"]
+            if k in ["true_positives", "false_positives"]
         },
         icon_size=20,
         legend={"loc": "upper left", "bbox_to_anchor": (1.05, 1)},
-        colors=["#56ae6c", "#fe6e6c"],
-        title={"label": "People without the condition", "loc": "center"},
-        icons=['face-smile', 'face-frown'],
-        vertical=True,
+        colors=[  "#56ae6c", "#fe6e6c",],
+        title={"label": "People who got a positive test", "loc": "center"},
+        icons=['face-meh', 'face-frown'],
+        vertical=False,
         block_arranging_style="new-line",
         starting_location="NW",
     )
@@ -29,18 +30,19 @@ def make_waffle(results_dict: dict):
     fig2 = plt.figure(
         FigureClass=Waffle,
         rows=5,
+
         columns=10,
         values={
             k: v
             for k, v in results_dict.items()
-            if k in ["true_positives", "false_negatives"]
+            if k in ["true_negatives", "false_negatives"]
         },
         icon_size=20,
         legend={"loc": "upper left", "bbox_to_anchor": (1.05, 1)},
         colors=["#719a78", "#fe6e6c"],
-        title={"label": "People with the condition", "loc": "center"},
-        icons=['face-meh', 'face-frown'],
-        vertical=True,
+        title={"label": "People who got a negative test", "loc": "center"},
+        icons=['face-smile', 'face-frown'],
+        vertical=False,
         block_arranging_style="new-line",
         starting_location="NW",
     )
@@ -70,6 +72,9 @@ def visualize_test_results(pop_dict, condition, sensitivity, specificity, grid_s
                 results, metrics_message = calculate_test_metrics(t_df, condition)  
                 messages += metrics_message
                 fig1, fig2 = make_waffle(results)
+                st.write("**Test Metrics:**")
+                for metric, value in results.items():
+                    st.write(f"{metric}: {value}")
 
                 return fig1, fig2, messages
             else:
