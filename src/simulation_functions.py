@@ -122,6 +122,8 @@ def calculate_test_metrics(t_df: pl.DataFrame, condition: str) -> (dict, str):
 
     pretest_prob = pretest_odds*100
     posttest_prob = posttest_odds / (posttest_odds + 1)
+
+
     accuracy = (tp + tn) / t_df.height if t_df.height > 0 else 0
 
     # Calculate confidence intervals
@@ -143,21 +145,25 @@ def calculate_test_metrics(t_df: pl.DataFrame, condition: str) -> (dict, str):
     accuracy_lower = accuracy - z * accuracy_se
     accuracy_upper = accuracy + z * accuracy_se
 
-    messages += f"We tested for {condition} which has a prevalence of  {prevalence*100:.2f}% in this population\n\n"
+    # Post-test probability confidence interval
+    posttest_prob_lower = (posttest_prob - z * math.sqrt(posttest_prob * (1 - posttest_prob) / n))
+    posttest_prob_upper = (posttest_prob + z * math.sqrt(posttest_prob * (1 - posttest_prob) / n))
 
-    messages += f"Pre-Test Probability: {pretest_odds*100:.2f}%\n\n"
-    messages += f"Post Test Probability: {posttest_prob*100:.2f}% (95% CI: {(posttest_prob - 1.96*math.sqrt(posttest_prob*(1-posttest_prob)/n))*100:.2f}%, {(posttest_prob + 1.96*math.sqrt(posttest_prob*(1-posttest_prob)/n))*100:.2f}%)\n"
-    messages += f"Percentage of people with a wrong result: {(1-accuracy)*100:.2f}% (95% CI: {(1-accuracy_upper)*100:.2f}%, {(1-accuracy_lower)*100:.2f}%)\n"
+    # messages += f"We tested for {condition} which has a prevalence of  {prevalence*100:.2f}% in this population\n\n"
+
+    # messages += f"Pre-Test Probability: {pretest_odds*100:.2f}%\n\n"
+    # messages += f"Post Test Probability: {posttest_prob*100:.2f}% (95% CI: {(posttest_prob - 1.96*math.sqrt(posttest_prob*(1-posttest_prob)/n))*100:.2f}%, {(posttest_prob + 1.96*math.sqrt(posttest_prob*(1-posttest_prob)/n))*100:.2f}%)\n"
+    # messages += f"Percentage of people with a wrong result: {(1-accuracy)*100:.2f}% (95% CI: {(1-accuracy_upper)*100:.2f}%, {(1-accuracy_lower)*100:.2f}%)\n"
 
     metrics_dict = {
-        "sensitivity": sensitivity,
-        "specificity": specificity,
+        "sensitivity": round(sensitivity*100, 2),
+        "specificity": round(specificity*100, 2),
         "true_positives": tp,
         "true_negatives": tn,
         "false_positives": fp,
         "false_negatives": fn,
-        "positive_predictive_value": ppv,
-        "negative_predictive_value": npv,
+        "positive_predictive_value": round(ppv*100, 2),
+        "negative_predictive_value": round(npv*100, 2), 
         "positive_likelihood_ratio": likelihood_ratio_pos,
         "negative_likelihood_ratio": likelihood_ratio_neg,
         "prevalence": prevalence,
@@ -169,5 +175,10 @@ def calculate_test_metrics(t_df: pl.DataFrame, condition: str) -> (dict, str):
         "sensitivity_ci": (sensitivity_lower, sensitivity_upper),
         "specificity_ci": (specificity_lower, specificity_upper),
         "accuracy_ci": (accuracy_lower, accuracy_upper),
+        "accuracy_se": accuracy_se,
+        "sensitivity_se": sensitivity_se,
+        "specificity_se": specificity_se,
+        "post_test_probability_lower": posttest_prob_lower,
+        "post_test_probability_upper": posttest_prob_upper,
     }
     return metrics_dict, messages
