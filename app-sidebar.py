@@ -24,10 +24,16 @@ def app():
         )
         disease_name = st.text_input("Disease Name", value="Disease A")
         prevalence = st.number_input(
-            "Prevalence", min_value=0.0, max_value=1.0, value=0.1, step=0.01
+            "Prevalence",
+            min_value=0.000001,
+            max_value=1.0,
+            value=0.05,
+            step=0.001,
+            format="%.5f",
         )
-        sensitivity = st.slider("Sensitivity", 0.0, 1.0, 0.8, 0.01)
-        specificity = st.slider("Specificity", 0.0, 1.0, 0.9, 0.01)
+
+        sensitivity = st.slider("Sensitivity", 0.0, 1.0, 0.9, 0.01)
+        specificity = st.slider("Specificity", 0.0, 1.0, 0.7, 0.01)
 
         # Create population data dictionary
         population_data = {
@@ -40,8 +46,6 @@ def app():
         col1,
         col2,
     ) = st.columns(2)
-    with col1:
-        st.header("Results")
 
     # Run simulation and visualization
     if st.sidebar.button("Run Simulation"):
