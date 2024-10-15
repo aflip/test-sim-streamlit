@@ -23,7 +23,7 @@ def generate_testing_population(population_data_dict) -> (pl.DataFrame, str):
         or len(population_data_dict["conditions"]) == 0
     ):
         messages += "Error: No one home! Population is not large enough!\n"
-        return None,messages
+        return None, messages
 
     low_prevalence_conditions = [
         condition
@@ -31,9 +31,7 @@ def generate_testing_population(population_data_dict) -> (pl.DataFrame, str):
         if value <= 1 / population_data_dict["size"]
     ]
     if low_prevalence_conditions:
-        messages += (
-            f"Error: Good news: Not enough patients! \nBad news: Population is not large enough to support the given prevalence for: {', '.join(low_prevalence_conditions)}\n"
-        )
+        messages += f"Error: Good news: Not enough patients! \nBad news: Population is not large enough to support the given prevalence for: {', '.join(low_prevalence_conditions)}\n"
         return None, messages
 
     else:
@@ -45,10 +43,11 @@ def generate_testing_population(population_data_dict) -> (pl.DataFrame, str):
         data[condition] = np.random.choice(
             [True, False], size=population_size, p=[prevalence, 1 - prevalence]
         )
-    messages += "\nPrevalence of conditions in the generated population:\n"
-    for condition in list(population_data_dict["conditions"].keys()):
-        messages += f"{condition}: {data[condition].mean():.2%}\n"
-    messages += "\n-------------------------------------------\n"
+    # messages are being repeated, am unifying them
+    # messages += "\nPrevalence of conditions in the generated population:\n"
+    # for condition in list(population_data_dict["conditions"].keys()):
+    #     messages += f"{condition}: {data[condition].mean():.2%}\n"
+    # messages += "\n-------------------------------------------\n"
     return pl.DataFrame(data), messages
 
 
@@ -74,9 +73,7 @@ def perform_test(
     messages = ""
 
     if condition not in data.columns:
-        messages += (
-            f"{condition} not found in the population!, try with one of these conditions {data.columns}\n"
-        )
+        messages += f"{condition} not found in the population!, try with one of these conditions {data.columns}\n"
         return None, messages
     true_conditions = data[condition].to_numpy()
     size = data.height
@@ -86,15 +83,11 @@ def perform_test(
         # Simulate test outcomes based on sensitivity and specificity
         test_results = np.where(
             true_conditions,
-            np.random.rand(size)
-            < t_sensitivity,  # True positives and false negatives
-            np.random.rand(size)
-            >= t_specificity,  # False positives and true negatives
+            np.random.rand(size) < t_sensitivity,  # True positives and false negatives
+            np.random.rand(size) >= t_specificity,  # False positives and true negatives
         )
     else:
-        messages += (
-            "Error:Population too fit! No one here has this problem, try again with a different condition\n"
-        )
+        messages += "Error:Population too fit! No one here has this problem, try again with a different condition\n"
         return messages
     result_df = pl.DataFrame(
         {
@@ -127,6 +120,7 @@ def calculate_test_metrics(t_df: pl.DataFrame, condition: str) -> (dict, str):
     pretest_odds = prevalence / (1 - prevalence)
     posttest_odds = pretest_odds * likelihood_ratio_pos
 
+    pretest_prob = pretest_odds*100
     posttest_prob = posttest_odds / (posttest_odds + 1)
     accuracy = (tp + tn) / t_df.height if t_df.height > 0 else 0
 
@@ -149,17 +143,11 @@ def calculate_test_metrics(t_df: pl.DataFrame, condition: str) -> (dict, str):
     accuracy_lower = accuracy - z * accuracy_se
     accuracy_upper = accuracy + z * accuracy_se
 
-    messages += (
-        f"We tested for {condition} which has a prevalence of {prevalence*100:.2f}% in this population\n"
-    )
+    messages += f"We tested for {condition} which has a prevalence of  {prevalence*100:.2f}% in this population\n\n"
 
-    messages += f"Pre-Test Probability: {pretest_odds*100:.2f}%\n"
-    messages += (
-        f"Post Test Probability: {posttest_prob*100:.2f}% (95% CI: {(posttest_prob - 1.96*math.sqrt(posttest_prob*(1-posttest_prob)/n))*100:.2f}%, {(posttest_prob + 1.96*math.sqrt(posttest_prob*(1-posttest_prob)/n))*100:.2f}%)\n"
-    )
-    messages += (
-        f"Percentage of people with a wrong result: {(1-accuracy)*100:.2f}% (95% CI: {(1-accuracy_upper)*100:.2f}%, {(1-accuracy_lower)*100:.2f}%)\n"
-    )
+    messages += f"Pre-Test Probability: {pretest_odds*100:.2f}%\n\n"
+    messages += f"Post Test Probability: {posttest_prob*100:.2f}% (95% CI: {(posttest_prob - 1.96*math.sqrt(posttest_prob*(1-posttest_prob)/n))*100:.2f}%, {(posttest_prob + 1.96*math.sqrt(posttest_prob*(1-posttest_prob)/n))*100:.2f}%)\n"
+    messages += f"Percentage of people with a wrong result: {(1-accuracy)*100:.2f}% (95% CI: {(1-accuracy_upper)*100:.2f}%, {(1-accuracy_lower)*100:.2f}%)\n"
 
     metrics_dict = {
         "sensitivity": sensitivity,
@@ -175,6 +163,7 @@ def calculate_test_metrics(t_df: pl.DataFrame, condition: str) -> (dict, str):
         "prevalence": prevalence,
         "pretest_odds": pretest_odds,
         "posttest_odds": posttest_odds,
+        "pretest_probability": pretest_prob,
         "posttest_probability": posttest_prob,
         "accuracy": accuracy,
         "sensitivity_ci": (sensitivity_lower, sensitivity_upper),
