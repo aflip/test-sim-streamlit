@@ -75,11 +75,11 @@ def visualize_test_results(pop_dict, condition, sensitivity, specificity, grid_s
                 results, metrics_message = calculate_test_metrics(t_df, condition)
                 messages += metrics_message
                 fig1, fig2 = make_waffle(results)
-                st.write("**Test Metrics:**")
-                for metric, value in results.items():
-                    st.write(f"{metric}: {value}")
+                # st.write("**Test Metrics:**")
+                # for metric, value in results.items():
+                #     st.write(f"{metric}: {value}")
 
-                return fig1, fig2, messages
+                return fig1, fig2, messages, results
             else:
                 messages += "Error: Good news, no one has this condition! \nBad news, we need sick people!"
                 return None, None, messages

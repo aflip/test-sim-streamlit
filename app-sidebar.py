@@ -49,7 +49,7 @@ def app():
 
     # Run simulation and visualization
     if st.sidebar.button("Run Simulation"):
-        fig1, fig2, messages = visualize_test_results(
+        fig1, fig2, messages, test_results = visualize_test_results(
             population_data,
             disease_name,
             sensitivity,
@@ -64,7 +64,7 @@ def app():
             else:
                 st.error(messages)
         with col2:
-            st.write(messages)
+            st.write(test_results)
 
 
 if __name__ == "__main__":
