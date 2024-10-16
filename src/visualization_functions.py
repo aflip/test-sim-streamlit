@@ -5,9 +5,6 @@ from src.simulation_functions import (
     perform_test,
     calculate_test_metrics,
 )
-import seaborn as sns
-import numpy as np
-import pandas as pd
 
 
 def make_waffle(results_dict: dict):
@@ -93,7 +90,7 @@ def visualize_test_results(pop_dict, condition, sensitivity, specificity, grid_s
         messages += f"An error occurred: {e}"
         return None, None, messages
 
-
+# deactivated because 2x2 tables are not large enough for a heatmap to make any additional sense or use. 
 # def result_heatmap(data):
 #     # Create a DataFrame from the results dictionary
 
