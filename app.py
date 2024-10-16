@@ -1,6 +1,6 @@
 import streamlit as st
-from visualization_functions import visualize_test_results
-from result_display_functions import two_by_two
+from src.visualization_functions import visualize_test_results
+from src.result_display_functions import two_by_two
 
 st.set_page_config(
     page_title="Medical Test Simulation",
