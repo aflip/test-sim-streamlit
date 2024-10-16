@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from pywaffle import Waffle
-from src.simulation_functions import (
+from simulation_functions import (
     generate_testing_population,
     perform_test,
     calculate_test_metrics,
