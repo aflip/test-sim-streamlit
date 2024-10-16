@@ -119,3 +119,6 @@ frontend/cypress/snapshots/linux/1x
 
 # Custom
 *.bak
+
+# my test stuff that doesnt need to go
+.tests
