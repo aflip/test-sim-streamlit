@@ -1,6 +1,7 @@
 # functions for pretty display of the test results
 import polars as pl
-import streamlit as st
+from great_tables import loc, style
+
 
 def two_by_two(results):
     """Display two by two table of test results.
@@ -14,5 +15,10 @@ def two_by_two(results):
             "Actual Negative": [results["false_positives"], results["true_negatives"]],
         }
     )
-    return df
 
+    df.style.tab_style(
+        style.text(font="Georgia"),
+        loc.body(columns="Actual Negative"),
+    )
+
+    return df

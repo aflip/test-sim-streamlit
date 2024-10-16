@@ -5,6 +5,10 @@ from src.simulation_functions import (
     perform_test,
     calculate_test_metrics,
 )
+import seaborn as sns
+import numpy as np
+import pandas as pd
+
 
 def make_waffle(results_dict: dict):
     fig1 = plt.figure(
@@ -19,7 +23,7 @@ def make_waffle(results_dict: dict):
         icon_size=20,
         legend={"loc": "upper left", "bbox_to_anchor": (1.05, 1)},
         colors=[
-            "#56ae6c",
+            "#719a78",
             "#fe6e6c",
         ],
         title={"label": "People who got a positive test", "loc": "center"},
@@ -40,7 +44,7 @@ def make_waffle(results_dict: dict):
         },
         icon_size=20,
         legend={"loc": "upper left", "bbox_to_anchor": (1.05, 1)},
-        colors=["#719a78", "#fe6e6c"],
+        colors=["#56ae6c", "#fe6e6c"],
         title={"label": "People who got a negative test", "loc": "center"},
         icons=["face-smile", "face-frown"],
         vertical=False,
@@ -88,3 +92,36 @@ def visualize_test_results(pop_dict, condition, sensitivity, specificity, grid_s
     except Exception as e:
         messages += f"An error occurred: {e}"
         return None, None, messages
+
+
+# def result_heatmap(data):
+#     # Create a DataFrame from the results dictionary
+
+#     conf_matrix = np.array(
+#         [
+#             [data["true_negatives"], data["false_positives"]],
+#             [data["false_negatives"], data["true_positives"]],
+#         ]
+#     )
+
+#     # Create a DataFrame for better labeling
+#     df_cm = pd.DataFrame(
+#         conf_matrix,
+#         index=["Actual Negative", "Actual Positive"],
+#         columns=["Predicted Negative", "Predicted Positive"],
+#     )
+#     fig, ax = plt.subplots()
+#     sns.color_palette("colorblind")
+#     sns.heatmap(
+#         df_cm.transpose(),
+#         annot=True,
+#         fmt="d",
+#         #cmap="colorblind", 
+#         cbar=False,  # Remove the colorbar,
+#         linewidths=1,
+#         linecolor="white",
+#     )
+
+#     ax.xaxis.tick_top()  # Move x-axis labels to the top
+#     ax.xaxis.set_label_position("top")  # Align x-axis label to the top
+#     return fig

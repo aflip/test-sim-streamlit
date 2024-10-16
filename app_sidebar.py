@@ -1,6 +1,7 @@
 import streamlit as st
 from src.visualization_functions import visualize_test_results
 from src.result_display_functions import two_by_two
+from great_tables import loc, style
 
 st.set_page_config(
     page_title="Medical Test Simulation",
@@ -66,7 +67,10 @@ def app():
                 st.error(messages)
         with col2:
             table = two_by_two(test_results)
-            st.table(table)
+            # fig3= result_heatmap(test_results)
+            # st.pyplot(fig3)
+            st.dataframe(table
+            )
             st.write(test_results)
 
 
