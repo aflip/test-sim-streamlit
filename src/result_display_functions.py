@@ -1,8 +1,8 @@
 # functions for pretty display of the test results
 import polars as pl
-from great_tables import loc, style
-import pandas as pd
-import numpy as np
+# from great_tables import loc, style
+# import pandas as pd
+# import numpy as np
 
 
 def two_by_two(results):
