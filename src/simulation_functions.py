@@ -147,7 +147,7 @@ def calculate_test_metrics(t_df: pl.DataFrame, condition: str) -> (dict, str):
 
     messages += f"Pre-Test Probability: {pretest_odds*100:.2f}%\n\n"
     messages += f"Post Test Probability: {posttest_prob*100:.2f}% (95% CI: {(posttest_prob - 1.96*math.sqrt(posttest_prob*(1-posttest_prob)/n))*100:.2f}%, {(posttest_prob + 1.96*math.sqrt(posttest_prob*(1-posttest_prob)/n))*100:.2f}%)\n"
-    messages += f"\nPercentage of people with a wrong result: {(1-accuracy)*100:.2f}% (95% CI: {(1-accuracy_upper)*100:.2f}%, {(1-accuracy_lower)*100:.2f}%)\n"
+    messages += f"Percentage of people with a wrong result: {(1-accuracy)*100:.2f}% (95% CI: {(1-accuracy_upper)*100:.2f}%, {(1-accuracy_lower)*100:.2f}%)\n"
 
     metrics_dict = {
         "sensitivity": sensitivity,
